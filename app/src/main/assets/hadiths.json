@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "book": "Sahih al-Bukhari",
+    "bookId": "bukhari",
+    "chapter": "Book of Revelation (كتاب بدء الوحى)",
+    "hadithNumber": 1,
+    "narrator": "Umar bin Al-Khattab (RA)",
+    "arabic": "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ، وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى، فَمَنْ كَانَتْ هِجْرَتُهُ إِلَى دُنْيَا يُصِيبُهَا أَوْ إِلَى امْرَأَةٍ يَنْكِحُهَا، فَهِجْرَتُهُ إِلَى مَا هَاجَرَ إِلَيْهِ.",
+    "translationUrdu": "اعمال کا دارومدار نیتوں پر ہے اور ہر شخص کے لیے وہی ہے جس کی اس نے نیت کی۔ پس جس کی ہجرت دنیا حاصل کرنے کے لیے ہو یا کسی عورت سے نکاح کے لیے ہو تو اس کی ہجرت اسی کے لیے ہے جس کی طرف اس نے ہجرت کی۔",
+    "translationEnglish": "Actions are judged by motives (intentions), so each man will have what he intended. Thus, he whose migration was for the world he might get, or for a woman he might marry, his migration was for that which he migrated for.",
+    "reference": "Sahih al-Bukhari 1"
+  },
+  {
+    "id": 2,
+    "book": "Sahih al-Bukhari",
+    "bookId": "bukhari",
+    "chapter": "Book of Belief (كتاب الإيمان)",
+    "hadithNumber": 8,
+    "narrator": "Abdullah bin Umar (RA)",
+    "arabic": "بُنِيَ الإِسْلاَمُ عَلَى خَمْسٍ: شَهَادَةِ أَنْ لاَ إِلَهَ إِلاَّ اللَّهُ وَأَنَّ مُحَمَّدًا رَسُولُ اللَّهِ، وَإِقَامِ الصَّلاَةِ، وَإِيتَاءِ الزَّكَاةِ، وَالْحَجِّ، وَصَوْمِ رَمَضَانَ.",
+    "translationUrdu": "اسلام کی بنیاد پانچ چیزوں پر ہے: اس بات کی گواہی دینا کہ اللہ کے سوا کوئی معبود نہیں اور محمد ﷺ اللہ کے رسول ہیں، نماز قائم کرنا، زکوٰۃ ادا کرنا، حج کرنا، اور رمضان کے روزے رکھنا۔",
+    "translationEnglish": "Islam is based on (the following) five principles: 1. To testify that none has the right to be worshipped but Allah and Muhammad is Allah's Messenger. 2. To offer prayers dutifully and perfectly. 3. To pay Zakat. 4. To perform Hajj. 5. To observe fast during Ramadan.",
+    "reference": "Sahih al-Bukhari 8"
+  },
+  {
+    "id": 3,
+    "book": "Sahih al-Bukhari",
+    "bookId": "bukhari",
+    "chapter": "Book of Belief (كتاب الإيمان)",
+    "hadithNumber": 10,
+    "narrator": "Abdullah bin Amr (RA)",
+    "arabic": "الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ، وَالْمُهَاجِرُ مَنْ هَجَرَ مَا نَهَى اللَّهُ عَنْهُ.",
+    "translationUrdu": "مسلمان وہ ہے جس کی زبان اور ہاتھ سے دوسرے مسلمان محفوظ رہیں، اور مہاجر وہ ہے جو ان چیزوں کو چھوڑ دے جن سے اللہ نے منع فرمایا ہے۔",
+    "translationEnglish": "The Muslim is the one from whose tongue and hand other Muslims are safe, and the Muhajir (emigrant) is the one who abandons what Allah has forbidden.",
+    "reference": "Sahih al-Bukhari 10"
+  },
+  {
+    "id": 4,
+    "book": "Sahih al-Bukhari",
+    "bookId": "bukhari",
+    "chapter": "Book of Belief (كتاب الإيمان)",
+    "hadithNumber": 13,
+    "narrator": "Anas bin Malik (RA)",
+    "arabic": "لاَ يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ.",
+    "translationUrdu": "تم میں سے کوئی شخص اس وقت تک سچا مومن نہیں ہو سکتا جب تک کہ وہ اپنے بھائی کے لیے وہی پسند نہ کرے جو اپنے لیے پسند کرتا ہے۔",
+    "translationEnglish": "None of you will have true faith until he wishes for his brother what he likes for himself.",
+    "reference": "Sahih al-Bukhari 13"
+  },
+  {
+    "id": 5,
+    "book": "Sahih al-Bukhari",
+    "bookId": "bukhari",
+    "chapter": "Virtues of the Qur'an (كتاب فضائل القرآن)",
+    "hadithNumber": 5027,
+    "narrator": "Uthman bin Affan (RA)",
+    "arabic": "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ.",
+    "translationUrdu": "تم میں سے سب سے بہتر وہ شخص ہے جو قرآن سیکھے اور دوسروں کو سکھائے۔",
+    "translationEnglish": "The best among you are those who learn the Qur'an and teach it to others.",
+    "reference": "Sahih al-Bukhari 5027"
+  },
+  {
+    "id": 6,
+    "book": "Sahih al-Bukhari",
+    "bookId": "bukhari",
+    "chapter": "Good Manners and Form (كتاب الأدب)",
+    "hadithNumber": 6018,
+    "narrator": "Abu Hurairah (RA)",
+    "arabic": "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ، وَمَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيُكْرِمْ جَارَهُ، وَمَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيُكْرِمْ ضَيْفَهُ.",
+    "translationUrdu": "جو شخص اللہ اور یوم آخرت پر ایمان رکھتا ہو اسے چاہیے کہ اچھی بات کہے یا خاموش رہے، اور جو اللہ اور یوم آخرت پر ایمان رکھتا ہو اسے چاہیے کہ اپنے پڑوسی کا احترام کرے، اور جو اللہ اور یوم آخرت پر ایمان رکھتا ہو اسے چاہیے کہ اپنے مہمان کی عزت کرے۔",
+    "translationEnglish": "Whoever believes in Allah and the Last Day should speak good or remain silent. Whoever believes in Allah and the Last Day should be hospitable to his neighbor. And whoever believes in Allah and the Last Day should be hospitable to his guest.",
+    "reference": "Sahih al-Bukhari 6018"
+  },
+  {
+    "id": 7,
+    "book": "Sahih Muslim",
+    "bookId": "muslim",
+    "chapter": "Book of Faith (كتاب الإيمان)",
+    "hadithNumber": 1,
+    "narrator": "Umar bin Al-Khattab (RA)",
+    "arabic": "فَأَخْبِرْنِي عَنِ الإِسْلاَمِ. قَالَ رَسُولُ اللَّهِ صلى الله عليه وسلم: الإِسْلاَمُ أَنْ تَشْهَدَ أَنْ لاَ إِلَهَ إِلاَّ اللَّهُ وَأَنَّ مُحَمَّدًا رَسُولُ اللَّهِ، وَتُقِيمَ الصَّلاَةَ، وَتُؤْتِيَ الزَّكَاةَ، وَتَصُومَ رَمَضَانَ، وَتَحُجَّ الْبَيْتَ إِنِ اسْتَطَعْتَ إِلَيْهِ سَبِيلاً.",
+    "translationUrdu": "حضرت جبرائیل علیہ السلام نے عرض کیا: مجھے اسلام کے بارے میں بتائیے۔ رسول اللہ ﷺ نے فرمایا: اسلام یہ ہے کہ تم گواہی دو کہ اللہ کے سوا کوئی معبود نہیں اور محمد ﷺ اللہ کے رسول ہیں، نماز قائم کرو، زکوٰۃ ادا کرو، رمضان کے روزے رکھو اور اگر استطاعت ہو تو بیت اللہ کا حج کرو۔",
+    "translationEnglish": "Jibril said: 'Tell me about Islam.' The Messenger of Allah (ﷺ) said: 'Islam is to testify that there is no god but Allah and Muhammad is the Messenger of Allah, to establish prayer, to pay Zakat, to fast in Ramadan, and to perform the pilgrimage to the House if you have the means.'",
+    "reference": "Sahih Muslim 1"
+  },
+  {
+    "id": 8,
+    "book": "Sahih Muslim",
+    "bookId": "muslim",
+    "chapter": "Book of Purification (كتاب الطهارة)",
+    "hadithNumber": 223,
+    "narrator": "Abu Malik Al-Ash'ari (RA)",
+    "arabic": "الطُّهُورُ شَطْرُ الإِيمَانِ، وَالْحَمْدُ لِلَّهِ تَمْلأُ الْمِيزَانَ، وَسُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ تَمْلآنِ أَوْ تَمْلأُ مَا بَيْنَ السَّمَاوَاتِ وَالأَرْضِ، وَالصَّلاَةُ نُورٌ، وَالصَّدَقَةُ بُرْهَانٌ، وَالصَّبْرُ ضِيَاءٌ، وَالْقُرْآنُ حُجَّةٌ لَكَ أَوْ عَلَيْكَ.",
+    "translationUrdu": "پاکیزگی آدھا ایمان ہے، اور 'الحمد لله' میزان کو بھر دیتا ہے، اور 'سبحان الله اور الحمد لله' زمین اور آسمانوں کے درمیان کی جگہ کو بھر دیتے ہیں، اور نماز نور ہے، اور صدقہ دلیل ہے، اور صبر روشنی ہے، اور قرآن تمہارے حق میں یا تمہارے خلاف حجت ہے۔",
+    "translationEnglish": "Cleanliness is half of faith and 'Al-Hamdu Lillah' (Praise be to Allah) fills the scale, and 'Subhan Allah and Al-Hamdu Lillah' fill what is between the heavens and the earth, and prayer is light, and charity is proof, and patience is illumination, and the Qur'an is an argument for you or against you.",
+    "reference": "Sahih Muslim 223"
+  },
+  {
+    "id": 9,
+    "book": "Sahih Muslim",
+    "bookId": "muslim",
+    "chapter": "Book of Virtue and Good Manners (كتاب البر والصلة)",
+    "hadithNumber": 2564,
+    "narrator": "Abu Hurairah (RA)",
+    "arabic": "لاَ تَحَاسَدُوا، وَلاَ تَنَاجَشُوا، وَلاَ تَبَاغَضُوا، وَلاَ تَدَابَرُوا، وَلاَ يَبِعْ بَعْضُكُمْ عَلَى بَيْعِ بَعْضٍ، وَكُونُوا عِبَادَ اللَّهِ إِخْوَانًا.",
+    "translationUrdu": "ایک دوسرے سے حسد نہ کرو، دھوکے بازی نہ کرو، آپس میں بغض نہ رکھو، ایک دوسرے سے منہ نہ موڑو، اور تم میں سے کوئی دوسرے کے سودے پر سودا نہ کرے، اور اے اللہ کے بندو! بھائی بھائی بن جاؤ۔",
+    "translationEnglish": "Do not envy one another, do not artificially inflate prices, do not hate one another, do not turn away from one another, and do not undercut one another in trade. Be servants of Allah, brothers!",
+    "reference": "Sahih Muslim 2564"
+  },
+  {
+    "id": 10,
+    "book": "Sahih Muslim",
+    "bookId": "muslim",
+    "chapter": "Book of Dhikr and Dua (كتاب الذكر والدعاء)",
+    "hadithNumber": 2699,
+    "narrator": "Abu Hurairah (RA)",
+    "arabic": "مَنْ نَفَّسَ عَنْ مُؤْمِنٍ كُرْبَةً مِنْ كُرَبِ الدُّنْيَا نَفَّسَ اللَّهُ عَنْهُ كُرْبَةً مِنْ كُرَبِ يَوْمِ الْقِيَامَةِ، وَمَنْ يَسَّرَ عَلَى مُعْسِرٍ يَسَّرَ اللَّهُ عَلَيْهِ فِي الدُّنْيَا وَالآخِرَةِ، وَمَنْ سَتَرَ مُسْلِمًا سَتَرَهُ اللَّهُ فِي الدُّنْيَا وَالآخِرَةِ، وَاللَّهُ فِي عَوْنِ الْعَبْدِ مَا كَانَ الْعَبْدُ فِي عَوْنِ أَخِيهِ.",
+    "translationUrdu": "جس نے کسی مومن کی دنیاوی تکالیف میں سے کوئی تکلیف دور کی، اللہ تعالیٰ قیامت کے دن اس کی تکالیف میں سے ایک تکلیف دور فرمائے گا۔ جس نے کسی تنگ دست پر آسانی کی، اللہ دنیا اور آخرت میں اس پر آسانی فرمائے گا۔ اور جس نے کسی مسلمان کی پردہ پوشی کی، اللہ دنیا اور آخرت میں اس کی پردہ پوشی فرمائے گا۔ اور اللہ بندے کی مدد میں رہتا ہے جب تک بندہ اپنے بھائی کی مدد میں رہتا ہے۔",
+    "translationEnglish": "Whoever relieves a believer of distress in this world, Allah will relieve him of distress on the Day of Resurrection. Whoever makes things easy for someone in hardship, Allah will make things easy for him in this world and the Hereafter. Whoever covers the faults of a Muslim, Allah will cover his faults in this world and the Hereafter. Allah helps His servant as long as the servant helps his brother.",
+    "reference": "Sahih Muslim 2699"
+  }
+]
