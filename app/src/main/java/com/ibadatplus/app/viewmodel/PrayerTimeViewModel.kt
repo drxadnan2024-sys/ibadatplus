@@ -1,5 +1,5 @@
 package com.ibadatplus.app.viewmodel
-
+import com.ibadatplus.app.data.model.PrayerName
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
