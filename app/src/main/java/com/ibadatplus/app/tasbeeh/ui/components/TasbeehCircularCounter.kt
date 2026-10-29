@@ -1,5 +1,5 @@
 package com.ibadatplus.app.tasbeeh.ui.components
-
+import androidx.compose.foundation.layout.padding
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
