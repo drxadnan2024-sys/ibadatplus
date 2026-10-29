@@ -67,10 +67,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ibadatplus.app.alarm.PrayerAlarmPreferences
 import com.ibadatplus.app.alarm.PrayerAlarmScheduler
 import com.ibadatplus.app.data.model.BellAlarmState
+import com.ibadatplus.app.data.model.PrayerItem
 import com.ibadatplus.app.data.model.PrayerName
 import com.ibadatplus.app.data.model.PrayerTimesUiState
 import com.ibadatplus.app.hadith.repository.HadithRepository
 import com.ibadatplus.app.ui.prayer.components.CitySelectionDialog
+import com.ibadatplus.app.ui.prayer.components.JamatTimePickerDialog
 import com.ibadatplus.app.ui.prayer.components.NextPrayerCard
 import com.ibadatplus.app.ui.prayer.components.PrayerSettingsDialog
 import com.ibadatplus.app.ui.prayer.components.PrayerTimeRow
@@ -94,6 +96,7 @@ fun PrayerTimesScreen(
 
     var showCityDialog by remember { mutableStateOf(false) }
     var showSettingsDialog by remember { mutableStateOf(false) }
+    var selectedPrayerForJamatEdit by remember { mutableStateOf<PrayerItem?>(null) }
 
     // Location Permission Launcher
     val locationPermissionLauncher = rememberLauncherForActivityResult(
@@ -302,7 +305,7 @@ fun PrayerTimesScreen(
                             )
                         }
 
-                        // 6. List of 6 Prayers (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha) in 12-Hour format with 3-State Bell
+                        // 6. List of 6 Prayers (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha) in 12-Hour format with 3-State Bell & Jamat Time
                         items(schedule.prayers) { prayerItem ->
                             val bellState = alarmConfigs[prayerItem.name]?.bellState ?: BellAlarmState.FULL_AZAN
                             PrayerTimeRow(
@@ -318,6 +321,11 @@ fun PrayerTimesScreen(
                                             PrayerAlarmScheduler.cancelAlarm(context, prayerItem.name)
                                         }
                                         alarmConfigs = alarmPrefs.getAllConfigs()
+                                    }
+                                } else null,
+                                onEditJamatClick = if (prayerItem.name != PrayerName.SUNRISE) {
+                                    {
+                                        selectedPrayerForJamatEdit = prayerItem
                                     }
                                 } else null
                             )
@@ -425,6 +433,29 @@ fun PrayerTimesScreen(
                                 viewModel.updateAsrMadhab(madhab)
                             },
                             onDismissRequest = { showSettingsDialog = false }
+                        )
+                    }
+
+                    // 3. Local Masjid Jamat Adjustment TimePicker Dialog
+                    selectedPrayerForJamatEdit?.let { prayer ->
+                        JamatTimePickerDialog(
+                            prayerItem = prayer,
+                            defaultOffsetMinutes = viewModel.getDefaultJamatOffset(prayer.name),
+                            onSaveJamatTime = { pickedTime ->
+                                viewModel.saveCustomJamatTime(prayer.name, pickedTime)
+                                val autoSilent = alarmPrefs.getAutoSilentConfig()
+                                if (autoSilent.isEnabled && autoSilent.useJamatTime) {
+                                    PrayerAlarmScheduler.rescheduleAutoSilentAlarms(context)
+                                }
+                            },
+                            onResetToDefault = {
+                                viewModel.resetJamatTimeToDefault(prayer.name)
+                                val autoSilent = alarmPrefs.getAutoSilentConfig()
+                                if (autoSilent.isEnabled && autoSilent.useJamatTime) {
+                                    PrayerAlarmScheduler.rescheduleAutoSilentAlarms(context)
+                                }
+                            },
+                            onDismiss = { selectedPrayerForJamatEdit = null }
                         )
                     }
                 }

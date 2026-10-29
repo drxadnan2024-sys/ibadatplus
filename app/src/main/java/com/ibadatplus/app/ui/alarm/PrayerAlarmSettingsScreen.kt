@@ -244,11 +244,20 @@ fun PrayerAlarmSettingsScreen(
                         onToggle = { enabled ->
                             viewModel.toggleAutoSilent(context, enabled)
                         },
+                        onStartMinutesChanged = { startMinutes ->
+                            viewModel.updateAutoSilentStartMinutes(context, startMinutes)
+                        },
                         onDurationChanged = { minutes ->
                             viewModel.updateAutoSilentDuration(context, minutes)
                         },
+                        onUseJamatChanged = { useJamat ->
+                            viewModel.updateAutoSilentUseJamat(context, useJamat)
+                        },
                         onModeChanged = { mode ->
                             viewModel.updateAutoSilentMode(context, mode)
+                        },
+                        onTogglePrayer = { prayerName ->
+                            viewModel.toggleAutoSilentPrayer(context, prayerName)
                         }
                     )
                 }

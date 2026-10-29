@@ -65,13 +65,33 @@ enum class AutoSilentMode(val displayName: String) {
 }
 
 /**
- * Auto-Silent (Masjid Mode) during Salah configuration
+ * Auto-Silent (Masjid Mode) during Salah configuration with configurable Silent Window
  */
 data class AutoSilentConfig(
     val isEnabled: Boolean = false,
-    val durationMinutes: Int = 20, // 15 to 30 minutes
-    val silentMode: AutoSilentMode = AutoSilentMode.VIBRATE
-)
+    val startMinutesBefore: Int = 5, // e.g. 0 (at time), 5, 10 min before
+    val durationMinutes: Int = 25, // Total duration of silence (e.g. 15, 20, 25, 30, 45 min)
+    val useJamatTime: Boolean = true, // Align with local Masjid Jamat time, or Azaan time
+    val silentMode: AutoSilentMode = AutoSilentMode.VIBRATE,
+    val enabledPrayers: Set<PrayerName> = setOf(
+        PrayerName.FAJR,
+        PrayerName.DHUHR,
+        PrayerName.ASR,
+        PrayerName.MAGHRIB,
+        PrayerName.ISHA
+    )
+) {
+    val displayWindowSummary: String
+        get() {
+            val ref = if (useJamatTime) "Jamat" else "Azaan"
+            val after = (durationMinutes - startMinutesBefore).coerceAtLeast(0)
+            return if (startMinutesBefore > 0) {
+                "${startMinutesBefore}m before $ref until ${after}m after (Total ${durationMinutes}m)"
+            } else {
+                "At $ref time for ${durationMinutes}m"
+            }
+        }
+}
 
 /**
  * UI State for the Prayer Alarm Settings Screen

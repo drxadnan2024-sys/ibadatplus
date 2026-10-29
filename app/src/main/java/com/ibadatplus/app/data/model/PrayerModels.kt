@@ -70,6 +70,8 @@ enum class AsrMadhab(val displayName: String, val shadowMultiplier: Int) {
 data class PrayerItem(
     val name: PrayerName,
     val time: LocalTime,
+    val jamatTime: LocalTime? = null,
+    val isCustomJamat: Boolean = false,
     val isNext: Boolean = false,
     val isPassed: Boolean = false
 ) {
@@ -77,6 +79,13 @@ data class PrayerItem(
         get() {
             val formatter = DateTimeFormatter.ofPattern("hh:mm a", Locale.ENGLISH)
             return time.format(formatter)
+        }
+
+    val formattedJamat12Hour: String?
+        get() {
+            if (jamatTime == null) return null
+            val formatter = DateTimeFormatter.ofPattern("hh:mm a", Locale.ENGLISH)
+            return jamatTime.format(formatter)
         }
 }
 

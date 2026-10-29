@@ -15,6 +15,7 @@ import com.ibadatplus.app.data.model.DailyPrayerSchedule
 import com.ibadatplus.app.data.model.PrayerItem
 import com.ibadatplus.app.data.model.PrayerTimesUiState
 import com.ibadatplus.app.data.preferences.CityPreferences
+import com.ibadatplus.app.data.preferences.JamatPreferences
 import com.ibadatplus.app.data.repository.PrayerTimeRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -36,6 +37,7 @@ class PrayerTimeViewModel(
 ) : AndroidViewModel(application) {
 
     private val cityPreferences = CityPreferences(application)
+    private val jamatPreferences = JamatPreferences(application)
 
     private val _uiState = MutableStateFlow<PrayerTimesUiState>(PrayerTimesUiState.Loading)
     val uiState: StateFlow<PrayerTimesUiState> = _uiState.asStateFlow()
@@ -72,7 +74,7 @@ class PrayerTimeViewModel(
         }
 
         try {
-            val schedule = repository.getPrayerSchedule(
+            val rawSchedule = repository.getPrayerSchedule(
                 date = today,
                 currentTime = now,
                 latitude = lat,
@@ -82,6 +84,18 @@ class PrayerTimeViewModel(
                 method = currentMethod,
                 madhab = currentMadhab
             )
+
+            // Enrich prayers with local Masjid Jamat times
+            val enrichedPrayers = rawSchedule.prayers.map { item ->
+                if (item.name == PrayerName.SUNRISE) {
+                    item
+                } else {
+                    val jTime = jamatPreferences.getJamatTime(item.name, item.time)
+                    val isCustom = jamatPreferences.isCustomJamat(item.name)
+                    item.copy(jamatTime = jTime, isCustomJamat = isCustom)
+                }
+            }
+            val schedule = rawSchedule.copy(prayers = enrichedPrayers)
 
             val (remainingMillis, progress, formattedCountdown) = calculateCountdown(schedule)
 
@@ -271,6 +285,29 @@ class PrayerTimeViewModel(
         currentMadhab = madhab
         cityPreferences.saveAsrMadhab(madhab)
         loadPrayerTimes()
+    }
+
+    /**
+     * Set a custom Jamat time for a prayer (e.g. Fajr at 05:45 AM)
+     */
+    fun saveCustomJamatTime(prayerName: PrayerName, time: LocalTime) {
+        jamatPreferences.setCustomJamatTime(prayerName, time)
+        loadPrayerTimes()
+    }
+
+    /**
+     * Reset Jamat time back to standard offset
+     */
+    fun resetJamatTimeToDefault(prayerName: PrayerName) {
+        jamatPreferences.resetJamatTimeToDefault(prayerName)
+        loadPrayerTimes()
+    }
+
+    /**
+     * Returns default offset minutes from Azaan for a prayer
+     */
+    fun getDefaultJamatOffset(prayerName: PrayerName): Int {
+        return jamatPreferences.getDefaultOffsetMinutes(prayerName)
     }
 
     override fun onCleared() {

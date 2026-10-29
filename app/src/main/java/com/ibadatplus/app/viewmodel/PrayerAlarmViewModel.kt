@@ -155,6 +155,19 @@ class PrayerAlarmViewModel : ViewModel() {
         val updated = current.copy(isEnabled = enabled)
 
         prefs.saveAutoSilentConfig(updated)
+        PrayerAlarmScheduler.rescheduleAutoSilentAlarms(context)
+        loadSettings(context)
+    }
+
+    fun updateAutoSilentStartMinutes(context: Context, minutes: Int) {
+        val prefs = PrayerAlarmPreferences(context)
+        val current = prefs.getAutoSilentConfig()
+        val updated = current.copy(startMinutesBefore = minutes)
+
+        prefs.saveAutoSilentConfig(updated)
+        if (updated.isEnabled) {
+            PrayerAlarmScheduler.rescheduleAutoSilentAlarms(context)
+        }
         loadSettings(context)
     }
 
@@ -164,6 +177,21 @@ class PrayerAlarmViewModel : ViewModel() {
         val updated = current.copy(durationMinutes = durationMinutes)
 
         prefs.saveAutoSilentConfig(updated)
+        if (updated.isEnabled) {
+            PrayerAlarmScheduler.rescheduleAutoSilentAlarms(context)
+        }
+        loadSettings(context)
+    }
+
+    fun updateAutoSilentUseJamat(context: Context, useJamat: Boolean) {
+        val prefs = PrayerAlarmPreferences(context)
+        val current = prefs.getAutoSilentConfig()
+        val updated = current.copy(useJamatTime = useJamat)
+
+        prefs.saveAutoSilentConfig(updated)
+        if (updated.isEnabled) {
+            PrayerAlarmScheduler.rescheduleAutoSilentAlarms(context)
+        }
         loadSettings(context)
     }
 
@@ -173,6 +201,27 @@ class PrayerAlarmViewModel : ViewModel() {
         val updated = current.copy(silentMode = mode)
 
         prefs.saveAutoSilentConfig(updated)
+        if (updated.isEnabled) {
+            PrayerAlarmScheduler.rescheduleAutoSilentAlarms(context)
+        }
+        loadSettings(context)
+    }
+
+    fun toggleAutoSilentPrayer(context: Context, prayerName: PrayerName) {
+        val prefs = PrayerAlarmPreferences(context)
+        val current = prefs.getAutoSilentConfig()
+        val updatedPrayers = current.enabledPrayers.toMutableSet()
+        if (updatedPrayers.contains(prayerName)) {
+            updatedPrayers.remove(prayerName)
+        } else {
+            updatedPrayers.add(prayerName)
+        }
+        val updated = current.copy(enabledPrayers = updatedPrayers)
+
+        prefs.saveAutoSilentConfig(updated)
+        if (updated.isEnabled) {
+            PrayerAlarmScheduler.rescheduleAutoSilentAlarms(context)
+        }
         loadSettings(context)
     }
 

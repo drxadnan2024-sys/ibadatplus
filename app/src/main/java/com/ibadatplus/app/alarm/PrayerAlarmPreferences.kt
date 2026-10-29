@@ -26,8 +26,11 @@ class PrayerAlarmPreferences(context: Context) {
 
         // Auto-Silent (Masjid Mode) keys
         private const val KEY_AUTO_SILENT_ENABLED = "auto_silent_enabled"
+        private const val KEY_AUTO_SILENT_START_MINUTES = "auto_silent_start_minutes"
         private const val KEY_AUTO_SILENT_DURATION = "auto_silent_duration"
+        private const val KEY_AUTO_SILENT_USE_JAMAT = "auto_silent_use_jamat"
         private const val KEY_AUTO_SILENT_MODE = "auto_silent_mode"
+        private const val KEY_AUTO_SILENT_PRAYERS = "auto_silent_prayers"
 
         val SUPPORTED_PRAYERS = listOf(
             PrayerName.FAJR,
@@ -99,25 +102,43 @@ class PrayerAlarmPreferences(context: Context) {
 
     fun getAutoSilentConfig(): AutoSilentConfig {
         val isEnabled = prefs.getBoolean(KEY_AUTO_SILENT_ENABLED, false)
-        val duration = prefs.getInt(KEY_AUTO_SILENT_DURATION, 20)
+        val startMinutes = prefs.getInt(KEY_AUTO_SILENT_START_MINUTES, 5)
+        val duration = prefs.getInt(KEY_AUTO_SILENT_DURATION, 25)
+        val useJamat = prefs.getBoolean(KEY_AUTO_SILENT_USE_JAMAT, true)
         val modeName = prefs.getString(KEY_AUTO_SILENT_MODE, AutoSilentMode.VIBRATE.name)
         val mode = try {
             AutoSilentMode.valueOf(modeName ?: AutoSilentMode.VIBRATE.name)
         } catch (e: Exception) {
             AutoSilentMode.VIBRATE
         }
+
+        val prayerSet = prefs.getStringSet(
+            KEY_AUTO_SILENT_PRAYERS,
+            setOf("FAJR", "DHUHR", "ASR", "MAGHRIB", "ISHA")
+        ) ?: setOf("FAJR", "DHUHR", "ASR", "MAGHRIB", "ISHA")
+
+        val enabledPrayers = prayerSet.mapNotNull {
+            try { PrayerName.valueOf(it) } catch (e: Exception) { null }
+        }.toSet()
+
         return AutoSilentConfig(
             isEnabled = isEnabled,
+            startMinutesBefore = startMinutes,
             durationMinutes = duration,
-            silentMode = mode
+            useJamatTime = useJamat,
+            silentMode = mode,
+            enabledPrayers = if (enabledPrayers.isNotEmpty()) enabledPrayers else SUPPORTED_PRAYERS.toSet()
         )
     }
 
     fun saveAutoSilentConfig(config: AutoSilentConfig) {
         prefs.edit()
             .putBoolean(KEY_AUTO_SILENT_ENABLED, config.isEnabled)
+            .putInt(KEY_AUTO_SILENT_START_MINUTES, config.startMinutesBefore)
             .putInt(KEY_AUTO_SILENT_DURATION, config.durationMinutes)
+            .putBoolean(KEY_AUTO_SILENT_USE_JAMAT, config.useJamatTime)
             .putString(KEY_AUTO_SILENT_MODE, config.silentMode.name)
+            .putStringSet(KEY_AUTO_SILENT_PRAYERS, config.enabledPrayers.map { it.name }.toSet())
             .apply()
     }
 }

@@ -20,6 +20,8 @@ import androidx.compose.material.icons.filled.Brightness5
 import androidx.compose.material.icons.filled.Brightness6
 import androidx.compose.material.icons.filled.Brightness7
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material.icons.filled.NotificationsOff
@@ -50,6 +52,7 @@ fun PrayerTimeRow(
     prayerItem: PrayerItem,
     bellState: BellAlarmState = BellAlarmState.FULL_AZAN,
     onBellClick: (() -> Unit)? = null,
+    onEditJamatClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     val isNext = prayerItem.isNext
@@ -143,19 +146,80 @@ fun PrayerTimeRow(
                 }
             }
 
-            // 12-Hour Formatted Time & 3-State Bell Action
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = prayerItem.formatted12Hour,
-                    fontSize = 16.sp,
-                    fontWeight = if (isNext) FontWeight.ExtraBold else FontWeight.SemiBold,
-                    color = if (isNext) Color(0xFF0F5132) else contentColor
-                )
+            // 12-Hour Formatted Times (Azaan & Jamat) & 3-State Bell Action
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                if (prayerItem.name == PrayerName.SUNRISE) {
+                    Text(
+                        text = prayerItem.formatted12Hour,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = contentColor
+                    )
+                } else {
+                    // Azaan Time Block
+                    Column(horizontalAlignment = Alignment.End) {
+                        Text(
+                            text = "Azaan",
+                            fontSize = 9.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color(0xFF6B7280)
+                        )
+                        Text(
+                            text = prayerItem.formatted12Hour,
+                            fontSize = 13.sp,
+                            fontWeight = if (isNext) FontWeight.Bold else FontWeight.SemiBold,
+                            color = if (isNext) Color(0xFF0F5132) else contentColor
+                        )
+                    }
+
+                    // Jamat Time Block (Clickable chip with Edit icon)
+                    if (prayerItem.jamatTime != null) {
+                        Surface(
+                            shape = RoundedCornerShape(8.dp),
+                            color = if (prayerItem.isCustomJamat) Color(0xFFFEF3C7) else (if (isNext) Color(0xFFD1FAE5) else Color(0xFFF3F4F6)),
+                            border = BorderStroke(
+                                1.dp,
+                                if (prayerItem.isCustomJamat) Color(0xFFF59E0B) else (if (isNext) Color(0xFF86EFAC) else Color(0xFFE5E7EB))
+                            ),
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .clickable(enabled = onEditJamatClick != null) { onEditJamatClick?.invoke() }
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp)
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        text = "Jamat",
+                                        fontSize = 9.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = if (prayerItem.isCustomJamat) Color(0xFF92400E) else Color(0xFF065F46)
+                                    )
+                                    Spacer(modifier = Modifier.width(3.dp))
+                                    Icon(
+                                        imageVector = Icons.Default.Edit,
+                                        contentDescription = "Edit Jamat Time",
+                                        tint = if (prayerItem.isCustomJamat) Color(0xFFD97706) else Color(0xFF059669),
+                                        modifier = Modifier.size(10.dp)
+                                    )
+                                }
+                                Text(
+                                    text = prayerItem.formattedJamat12Hour ?: "--",
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (prayerItem.isCustomJamat) Color(0xFF78350F) else Color(0xFF0F5132)
+                                )
+                            }
+                        }
+                    }
+                }
 
                 // 3-State Bell icon (Full Azan, Beep/Notification, Silent/Off)
                 if (onBellClick != null && prayerItem.name != PrayerName.SUNRISE) {
-                    Spacer(modifier = Modifier.width(8.dp))
-
                     Surface(
                         shape = CircleShape,
                         color = when (bellState) {
@@ -185,8 +249,7 @@ fun PrayerTimeRow(
                             )
                         }
                     }
-                } else if (isPassed) {
-                    Spacer(modifier = Modifier.width(8.dp))
+                } else if (isPassed && prayerItem.name == PrayerName.SUNRISE) {
                     Icon(
                         imageVector = Icons.Default.CheckCircle,
                         contentDescription = "Passed",

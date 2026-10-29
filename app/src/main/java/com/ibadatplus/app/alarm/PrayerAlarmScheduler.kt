@@ -9,12 +9,15 @@ import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
 import android.provider.Settings
+import com.ibadatplus.app.alarm.autosilent.AutoSilentManager
+import com.ibadatplus.app.alarm.autosilent.AutoSilentReceiver
 import com.ibadatplus.app.alarm.receiver.AlarmReceiver
 import com.ibadatplus.app.data.model.AlarmToneType
 import com.ibadatplus.app.data.model.PrayerAlarmConfig
 import com.ibadatplus.app.data.model.PrayerName
 import com.ibadatplus.app.data.model.PreFajrAlarmConfig
 import com.ibadatplus.app.data.preferences.CityPreferences
+import com.ibadatplus.app.data.preferences.JamatPreferences
 import com.ibadatplus.app.data.repository.PrayerTimeRepository
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -323,6 +326,115 @@ object PrayerAlarmScheduler {
         // Reschedule Pre-Fajr alarm
         val preFajrConfig = prefs.getPreFajrConfig()
         schedulePreFajrAlarm(context, preFajrConfig)
+
+        // Reschedule Auto-Silent (Masjid Mode) alarms
+        rescheduleAutoSilentAlarms(context)
+    }
+
+    /**
+     * Reschedules Auto-Silent (Masjid Mode) alarms for all enabled prayers
+     */
+    fun rescheduleAutoSilentAlarms(context: Context) {
+        val prefs = PrayerAlarmPreferences(context)
+        val config = prefs.getAutoSilentConfig()
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        // Cancel all existing auto-silent alarms first
+        PrayerAlarmPreferences.SUPPORTED_PRAYERS.forEach { prayer ->
+            val pendingIntent = PendingIntent.getBroadcast(
+                context,
+                4000 + prayer.ordinal,
+                Intent(context, AutoSilentReceiver::class.java).apply {
+                    action = AutoSilentManager.ACTION_START_AUTO_SILENT
+                },
+                PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE
+            )
+            if (pendingIntent != null) {
+                alarmManager.cancel(pendingIntent)
+                pendingIntent.cancel()
+            }
+        }
+
+        if (!config.isEnabled) return
+
+        val repository = PrayerTimeRepository()
+        val cityPrefs = CityPreferences(context)
+        val jamatPrefs = JamatPreferences(context)
+        val defaultCity = cityPrefs.getSavedCity()
+        val calcMethod = cityPrefs.getSavedCalculationMethod()
+        val asrMadhab = cityPrefs.getSavedAsrMadhab()
+        val now = LocalDateTime.now()
+
+        val todaySchedule = repository.getPrayerSchedule(
+            date = LocalDate.now(),
+            currentTime = LocalTime.now(),
+            latitude = defaultCity.latitude,
+            longitude = defaultCity.longitude,
+            timeZoneId = defaultCity.timeZoneId,
+            locationName = defaultCity.name,
+            method = calcMethod,
+            madhab = asrMadhab
+        )
+
+        config.enabledPrayers.forEach { prayerName ->
+            val prayerItem = todaySchedule.prayers.firstOrNull { it.name == prayerName } ?: return@forEach
+            val baseTime = if (config.useJamatTime) {
+                jamatPrefs.getJamatTime(prayerName, prayerItem.time)
+            } else {
+                prayerItem.time
+            }
+
+            var triggerDateTime = todaySchedule.date.atTime(baseTime)
+                .minusMinutes(config.startMinutesBefore.toLong())
+
+            if (triggerDateTime.isBefore(now)) {
+                val tomorrow = LocalDate.now().plusDays(1)
+                val tomorrowSchedule = repository.getPrayerSchedule(
+                    date = tomorrow,
+                    currentTime = LocalTime.MIN,
+                    latitude = defaultCity.latitude,
+                    longitude = defaultCity.longitude,
+                    timeZoneId = defaultCity.timeZoneId,
+                    locationName = defaultCity.name,
+                    method = calcMethod,
+                    madhab = asrMadhab
+                )
+                val tomorrowItem = tomorrowSchedule.prayers.firstOrNull { it.name == prayerName } ?: return@forEach
+                val tomorrowBaseTime = if (config.useJamatTime) {
+                    jamatPrefs.getJamatTime(prayerName, tomorrowItem.time)
+                } else {
+                    tomorrowItem.time
+                }
+                triggerDateTime = tomorrow.atTime(tomorrowBaseTime)
+                    .minusMinutes(config.startMinutesBefore.toLong())
+            }
+
+            val triggerEpochMillis = triggerDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+
+            val intent = Intent(context, AutoSilentReceiver::class.java).apply {
+                action = AutoSilentManager.ACTION_START_AUTO_SILENT
+                putExtra(AutoSilentManager.EXTRA_DURATION_MINUTES, config.durationMinutes)
+                putExtra(AutoSilentManager.EXTRA_SILENT_MODE, config.silentMode.name)
+                putExtra(EXTRA_PRAYER_NAME, prayerName.name)
+            }
+
+            val pendingIntent = PendingIntent.getBroadcast(
+                context,
+                4000 + prayerName.ordinal,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerEpochMillis, pendingIntent)
+                } else {
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerEpochMillis, pendingIntent)
+                }
+            } catch (e: SecurityException) {
+                alarmManager.set(AlarmManager.RTC_WAKEUP, triggerEpochMillis, pendingIntent)
+            }
+        }
     }
 
     fun getFormattedNextAlarmTime(context: Context, prayerName: PrayerName, config: PrayerAlarmConfig): String {
