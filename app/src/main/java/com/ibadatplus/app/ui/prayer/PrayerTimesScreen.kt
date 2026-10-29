@@ -714,14 +714,6 @@ private fun UserAccountDialog(
         }
     )
 }
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color(0xFF198754)
-                )
-            }
-        }
-    }
-}
 
 /**
  * Bar showing active location (GPS vs City) and manual selection button
