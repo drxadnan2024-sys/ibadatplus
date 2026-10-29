@@ -14,7 +14,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.ibadatplus.app.auth.AuthManager
 import com.ibadatplus.app.auth.AuthScreen
 import com.ibadatplus.app.hadith.ui.HadithScreen
 import com.ibadatplus.app.qibla.ui.QiblaFinderScreen
@@ -44,8 +43,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     var currentScreen by remember { mutableStateOf(AppScreen.Splash) }
 
-                    // Hardware back button support
-                    BackHandler(enabled = currentScreen != AppScreen.PrayerTimes && currentScreen != AppScreen.Splash && currentScreen != AppScreen.Auth) {
+                    // Hardware back button support: always returns back to HomeScreen (PrayerTimes)
+                    BackHandler(enabled = currentScreen != AppScreen.PrayerTimes && currentScreen != AppScreen.Splash) {
                         currentScreen = AppScreen.PrayerTimes
                     }
 
@@ -57,11 +56,8 @@ class MainActivity : ComponentActivity() {
                             AppScreen.Splash -> {
                                 SplashScreen(
                                     onSplashFinished = {
-                                        currentScreen = if (AuthManager.isUserLoggedIn()) {
-                                            AppScreen.PrayerTimes
-                                        } else {
-                                            AppScreen.Auth
-                                        }
+                                        // Direct navigation to HomeScreen (PrayerTimesScreen), bypassing login
+                                        currentScreen = AppScreen.PrayerTimes
                                     }
                                 )
                             }
