@@ -42,10 +42,10 @@ class PrayerTimeViewModel(
     private val _uiState = MutableStateFlow<PrayerTimesUiState>(PrayerTimesUiState.Loading)
     val uiState: StateFlow<PrayerTimesUiState> = _uiState.asStateFlow()
 
-    // Current settings loaded from persistent SharedPreferences
-    private var currentMethod: CalculationMethod = cityPreferences.getSavedCalculationMethod()
-    private var currentMadhab: AsrMadhab = cityPreferences.getSavedAsrMadhab()
-    private var selectedCity: CityLocation = cityPreferences.getSavedCity()
+    // Current settings loaded from persistent SharedPreferences with safe fallbacks
+    private var currentMethod: CalculationMethod = try { cityPreferences.getSavedCalculationMethod() } catch (e: Throwable) { PrayerTimeRepository.DEFAULT_METHOD }
+    private var currentMadhab: AsrMadhab = try { cityPreferences.getSavedAsrMadhab() } catch (e: Throwable) { PrayerTimeRepository.DEFAULT_MADHAB }
+    private var selectedCity: CityLocation = try { cityPreferences.getSavedCity() } catch (e: Throwable) { PrayerTimeRepository.DEFAULT_CITY }
     private var isUsingGpsLocation: Boolean = false
     private var gpsCoordinates: Pair<Double, Double>? = null
     private var gpsLocationName: String = "GPS Location"
@@ -54,9 +54,13 @@ class PrayerTimeViewModel(
     private var tickerJob: Job? = null
 
     init {
-        // Initialize with saved city (e.g., Mumbai) and saved preferences
-        loadPrayerTimes()
-        startCountdownTicker()
+        try {
+            // Initialize with saved city (e.g., Mumbai) and saved preferences
+            loadPrayerTimes()
+            startCountdownTicker()
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
     }
 
     /**

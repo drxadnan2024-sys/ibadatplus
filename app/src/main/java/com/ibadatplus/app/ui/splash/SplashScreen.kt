@@ -41,16 +41,24 @@ fun SplashScreen(
     val alpha = remember { Animatable(0f) }
 
     LaunchedEffect(Unit) {
-        scale.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(durationMillis = 800, easing = FastOutSlowInEasing)
-        )
-        alpha.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(durationMillis = 600)
-        )
-        delay(1200L)
-        onSplashFinished()
+        try {
+            scale.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(durationMillis = 350, easing = FastOutSlowInEasing)
+            )
+            alpha.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(durationMillis = 300)
+            )
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+        delay(500L)
+        try {
+            onSplashFinished()
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
     }
 
     Box(
@@ -75,13 +83,22 @@ fun SplashScreen(
                 .padding(24.dp)
         ) {
             // App Logo
-            Image(
-                painter = painterResource(id = R.drawable.app_logo),
-                contentDescription = "Ibadat Plus Logo",
-                modifier = Modifier
-                    .size(160.dp)
-                    .clip(RoundedCornerShape(36.dp))
-            )
+            try {
+                Image(
+                    painter = painterResource(id = R.drawable.app_logo),
+                    contentDescription = "Ibadat Plus Logo",
+                    modifier = Modifier
+                        .size(150.dp)
+                        .clip(RoundedCornerShape(32.dp))
+                )
+            } catch (e: Throwable) {
+                Text(
+                    text = "☪ Ibadat Plus",
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 

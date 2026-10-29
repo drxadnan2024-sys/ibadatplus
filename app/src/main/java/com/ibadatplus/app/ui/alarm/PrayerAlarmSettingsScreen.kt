@@ -76,11 +76,10 @@ fun PrayerAlarmSettingsScreen(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.loadSettings(context)
-
-        // Request POST_NOTIFICATIONS on Android 13+
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        try {
+            viewModel.loadSettings(context)
+        } catch (e: Throwable) {
+            e.printStackTrace()
         }
     }
 

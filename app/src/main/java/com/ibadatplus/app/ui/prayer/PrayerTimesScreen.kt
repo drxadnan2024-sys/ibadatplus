@@ -96,39 +96,60 @@ fun PrayerTimesScreen(
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
-    val dailyHadith = remember { HadithRepository(context).getDailyHadith() }
-    val alarmPrefs = remember { PrayerAlarmPreferences(context) }
-    var alarmConfigs by remember { mutableStateOf(alarmPrefs.getAllConfigs()) }
+    val dailyHadith = remember {
+        try {
+            HadithRepository(context).getDailyHadith()
+        } catch (e: Throwable) {
+            null
+        }
+    }
+    val alarmPrefs = remember {
+        try {
+            PrayerAlarmPreferences(context)
+        } catch (e: Throwable) {
+            PrayerAlarmPreferences(context, "guest")
+        }
+    }
+    var alarmConfigs by remember {
+        mutableStateOf(
+            try {
+                alarmPrefs.getAllConfigs()
+            } catch (e: Throwable) {
+                emptyMap()
+            }
+        )
+    }
 
     var showCityDialog by remember { mutableStateOf(false) }
     var showSettingsDialog by remember { mutableStateOf(false) }
     var showAccountDialog by remember { mutableStateOf(false) }
-    var currentUser by remember { mutableStateOf(try { AuthManager.getCurrentUser() } catch (e: Exception) { null }) }
+    var currentUser by remember {
+        mutableStateOf(
+            try {
+                AuthManager.getCurrentUser()
+            } catch (e: Throwable) {
+                null
+            }
+        )
+    }
     var selectedPrayerForJamatEdit by remember { mutableStateOf<PrayerItem?>(null) }
 
-    // Location Permission Launcher
+    // Location Permission Launcher with safe error handling
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
-        val fineLocationGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
-        val coarseLocationGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
+        try {
+            val fineLocationGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
+            val coarseLocationGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
 
-        if (fineLocationGranted || coarseLocationGranted) {
-            viewModel.fetchCurrentLocationAndTimes(context)
-        } else {
+            if (fineLocationGranted || coarseLocationGranted) {
+                viewModel.fetchCurrentLocationAndTimes(context)
+            } else {
+                viewModel.onLocationPermissionDenied()
+            }
+        } catch (e: Throwable) {
+            e.printStackTrace()
             viewModel.onLocationPermissionDenied()
-        }
-    }
-
-    // Auto-request location permission on first composition ONLY if user has not picked a manual city
-    LaunchedEffect(Unit) {
-        if (!viewModel.isManualCitySaved()) {
-            locationPermissionLauncher.launch(
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                )
-            )
         }
     }
 

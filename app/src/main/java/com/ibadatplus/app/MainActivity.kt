@@ -16,7 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.google.firebase.FirebaseApp
-import com.ibadatplus.app.auth.AuthManager
 import com.ibadatplus.app.auth.AuthScreen
 import com.ibadatplus.app.hadith.ui.HadithScreen
 import com.ibadatplus.app.qibla.ui.QiblaFinderScreen
@@ -42,7 +41,7 @@ class MainActivity : ComponentActivity() {
         // Safe Firebase initialization wrapped in try-catch to avoid launch crashes
         try {
             FirebaseApp.initializeApp(this)
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             Log.e("MainActivity", "FirebaseApp init safely bypassed: ${e.message}", e)
         }
 
@@ -67,17 +66,8 @@ class MainActivity : ComponentActivity() {
                             AppScreen.Splash -> {
                                 SplashScreen(
                                     onSplashFinished = {
-                                        try {
-                                            // Check auth state safely; if not logged in or on error, navigate to HomeScreen
-                                            if (AuthManager.isUserLoggedIn()) {
-                                                currentScreen = AppScreen.PrayerTimes
-                                            } else {
-                                                currentScreen = AppScreen.PrayerTimes
-                                            }
-                                        } catch (e: Exception) {
-                                            Log.e("MainActivity", "Auth check error on splash finished", e)
-                                            currentScreen = AppScreen.PrayerTimes
-                                        }
+                                        // 500ms delay completed, trigger direct route to HomeScreen
+                                        currentScreen = AppScreen.PrayerTimes
                                     }
                                 )
                             }
