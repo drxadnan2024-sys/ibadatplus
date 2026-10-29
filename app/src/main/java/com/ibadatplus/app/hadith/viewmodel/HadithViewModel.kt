@@ -17,12 +17,17 @@ import kotlinx.coroutines.launch
 
 class HadithViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository = HadithRepository(application)
+    private var repository = HadithRepository(application)
 
     private val _uiState = MutableStateFlow(HadithUiState())
     val uiState: StateFlow<HadithUiState> = _uiState.asStateFlow()
 
     init {
+        loadData()
+    }
+
+    fun refreshForUser(application: Application) {
+        repository = HadithRepository(application)
         loadData()
     }
 

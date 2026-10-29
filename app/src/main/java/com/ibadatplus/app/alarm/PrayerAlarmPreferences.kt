@@ -2,6 +2,7 @@ package com.ibadatplus.app.alarm
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.ibadatplus.app.auth.AuthManager
 import com.ibadatplus.app.data.model.AlarmToneType
 import com.ibadatplus.app.data.model.AutoSilentConfig
 import com.ibadatplus.app.data.model.AutoSilentMode
@@ -10,9 +11,12 @@ import com.ibadatplus.app.data.model.PrayerAlarmConfig
 import com.ibadatplus.app.data.model.PrayerName
 import com.ibadatplus.app.data.model.PreFajrAlarmConfig
 
-class PrayerAlarmPreferences(context: Context) {
+class PrayerAlarmPreferences(
+    context: Context,
+    userId: String = AuthManager.getCurrentUserId()
+) {
 
-    private val prefs: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    private val prefs: SharedPreferences = context.getSharedPreferences("${PREFS_NAME}_$userId", Context.MODE_PRIVATE)
 
     companion object {
         private const val PREFS_NAME = "ibadat_prayer_alarms_prefs"

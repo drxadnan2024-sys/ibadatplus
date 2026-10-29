@@ -2,6 +2,7 @@ package com.ibadatplus.app.tasbeeh.repository
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.ibadatplus.app.auth.AuthManager
 import com.ibadatplus.app.tasbeeh.model.DefaultDhikrs
 import com.ibadatplus.app.tasbeeh.model.DhikrItem
 import org.json.JSONArray
@@ -10,11 +11,15 @@ import org.json.JSONObject
 /**
  * Handles persistent offline storage of Tasbeeh counts, lifetime totals,
  * target preferences, sound/vibration toggles, and custom Dhikrs.
+ * Fully isolated by authenticated User UID for multi-user support.
  */
-class TasbeehRepository(context: Context) {
+class TasbeehRepository(
+    context: Context,
+    userId: String = AuthManager.getCurrentUserId()
+) {
 
     private val prefs: SharedPreferences =
-        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        context.getSharedPreferences("${PREFS_NAME}_$userId", Context.MODE_PRIVATE)
 
     companion object {
         private const val PREFS_NAME = "ibadat_tasbeeh_prefs"

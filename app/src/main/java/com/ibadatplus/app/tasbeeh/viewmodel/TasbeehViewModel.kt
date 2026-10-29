@@ -23,13 +23,21 @@ import java.util.UUID
 
 class TasbeehViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository = TasbeehRepository(application)
+    private var repository = TasbeehRepository(application)
     private val audioManager = application.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
 
     private val _uiState = MutableStateFlow(TasbeehState())
     val uiState: StateFlow<TasbeehState> = _uiState.asStateFlow()
 
     init {
+        loadInitialState()
+    }
+
+    /**
+     * Refreshes Tasbeeh repository and counts when a new user signs in or logs out
+     */
+    fun refreshForUser(application: Application) {
+        repository = TasbeehRepository(application)
         loadInitialState()
     }
 

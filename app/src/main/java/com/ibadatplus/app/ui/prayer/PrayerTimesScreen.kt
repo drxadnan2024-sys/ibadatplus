@@ -24,6 +24,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Explore
@@ -35,6 +36,7 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.TouchApp
 import androidx.compose.material.icons.filled.Tune
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -45,6 +47,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -66,6 +69,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ibadatplus.app.alarm.PrayerAlarmPreferences
 import com.ibadatplus.app.alarm.PrayerAlarmScheduler
+import com.ibadatplus.app.auth.AuthManager
+import com.ibadatplus.app.auth.AuthUser
 import com.ibadatplus.app.data.model.BellAlarmState
 import com.ibadatplus.app.data.model.PrayerItem
 import com.ibadatplus.app.data.model.PrayerName
@@ -86,6 +91,7 @@ fun PrayerTimesScreen(
     onNavigateToQiblaFinder: () -> Unit = {},
     onNavigateToHadith: () -> Unit = {},
     onNavigateToTasbeeh: () -> Unit = {},
+    onNavigateToAuth: () -> Unit = {},
     viewModel: PrayerTimeViewModel = viewModel()
 ) {
     val context = LocalContext.current
@@ -96,6 +102,8 @@ fun PrayerTimesScreen(
 
     var showCityDialog by remember { mutableStateOf(false) }
     var showSettingsDialog by remember { mutableStateOf(false) }
+    var showAccountDialog by remember { mutableStateOf(false) }
+    var currentUser by remember { mutableStateOf(AuthManager.getCurrentUser()) }
     var selectedPrayerForJamatEdit by remember { mutableStateOf<PrayerItem?>(null) }
 
     // Location Permission Launcher
@@ -258,11 +266,16 @@ fun PrayerTimesScreen(
                     ) {
                         item { Spacer(modifier = Modifier.height(2.dp)) }
 
-                        // 1. English Date & Hijri Date Banner
+                        // 1. English Date & Hijri Date Banner with User Account Pill
                         item {
                             DateHeaderCard(
                                 englishDate = schedule.englishDateFormatted,
-                                hijriDate = schedule.hijriDateFormatted
+                                hijriDate = schedule.hijriDateFormatted,
+                                currentUser = currentUser,
+                                onAccountClick = {
+                                    currentUser = AuthManager.getCurrentUser()
+                                    showAccountDialog = true
+                                }
                             )
                         }
 
@@ -460,17 +473,38 @@ fun PrayerTimesScreen(
                     }
                 }
             }
+
+            if (showAccountDialog) {
+                UserAccountDialog(
+                    currentUser = currentUser,
+                    onDismiss = { showAccountDialog = false },
+                    onLoginClick = {
+                        showAccountDialog = false
+                        onNavigateToAuth()
+                    },
+                    onLogoutClick = {
+                        AuthManager.signOut(context)
+                        currentUser = null
+                        viewModel.reloadForUser()
+                        alarmConfigs = alarmPrefs.getAllConfigs()
+                        showAccountDialog = false
+                        onNavigateToAuth()
+                    }
+                )
+            }
         }
     }
 }
 
 /**
- * Clean Date Banner showing both English and Hijri dates
+ * Clean Date Banner showing both English and Hijri dates with User Account Badge
  */
 @Composable
 private fun DateHeaderCard(
     englishDate: String,
-    hijriDate: String
+    hijriDate: String,
+    currentUser: AuthUser?,
+    onAccountClick: () -> Unit
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -481,35 +515,205 @@ private fun DateHeaderCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(horizontal = 14.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Surface(
-                shape = CircleShape,
-                color = Color(0xFFE8F5E9),
-                modifier = Modifier.size(38.dp)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1f)
             ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = Icons.Default.CalendarMonth,
-                        contentDescription = "Date",
-                        tint = Color(0xFF198754),
-                        modifier = Modifier.size(20.dp)
+                Surface(
+                    shape = CircleShape,
+                    color = Color(0xFFE8F5E9),
+                    modifier = Modifier.size(38.dp)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = Icons.Default.CalendarMonth,
+                            contentDescription = "Date",
+                            tint = Color(0xFF198754),
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(10.dp))
+
+                Column {
+                    Text(
+                        text = englishDate,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF212529)
+                    )
+                    Text(
+                        text = hijriDate,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color(0xFF198754)
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.width(12.dp))
-
-            Column {
-                Text(
-                    text = englishDate,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF212529)
+            // User Profile / Account Badge
+            Surface(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(20.dp))
+                    .clickable { onAccountClick() },
+                color = if (currentUser != null && !currentUser.isAnonymous) Color(0xFFE8F5E9) else Color(0xFFF1F3F5),
+                border = BorderStroke(
+                    1.dp,
+                    if (currentUser != null && !currentUser.isAnonymous) Color(0xFF86EFAC) else Color(0xFFE2E8F0)
                 )
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "Account",
+                        tint = if (currentUser != null && !currentUser.isAnonymous) Color(0xFF16A34A) else Color(0xFF64748B),
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = if (currentUser != null && !currentUser.isAnonymous) {
+                            currentUser.phoneNumber ?: currentUser.email?.substringBefore("@") ?: "User"
+                        } else {
+                            "Guest"
+                        },
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = if (currentUser != null && !currentUser.isAnonymous) Color(0xFF15803D) else Color(0xFF475569)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun UserAccountDialog(
+    currentUser: AuthUser?,
+    onDismiss: () -> Unit,
+    onLoginClick: () -> Unit,
+    onLogoutClick: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Default.AccountCircle,
+                    contentDescription = null,
+                    tint = Color(0xFF198754),
+                    modifier = Modifier.size(28.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = hijriDate,
+                    text = if (currentUser != null && !currentUser.isAnonymous) "User Account" else "Guest Account",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                if (currentUser != null && !currentUser.isAnonymous) {
+                    Surface(
+                        color = Color(0xFFF0FDF4),
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.fillMaxWidth(),
+                        border = BorderStroke(1.dp, Color(0xFFBBF7D0))
+                    ) {
+                        Column(modifier = Modifier.padding(12.dp)) {
+                            Text(
+                                text = "LOGGED IN AS",
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF15803D)
+                            )
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(
+                                text = currentUser.phoneNumber ?: currentUser.email ?: "Authenticated User",
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF0F172A)
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = "UID: ${currentUser.uid}",
+                                fontSize = 10.sp,
+                                color = Color(0xFF64748B)
+                            )
+                        }
+                    }
+
+                    Text(
+                        text = "Your Tasbeeh counts, custom dhikrs, mosque Jamat offsets, and prayer alarm preferences are securely isolated and linked only to your UID.",
+                        fontSize = 12.sp,
+                        color = Color(0xFF475569),
+                        lineHeight = 17.sp
+                    )
+                } else {
+                    Surface(
+                        color = Color(0xFFF8FAFC),
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.fillMaxWidth(),
+                        border = BorderStroke(1.dp, Color(0xFFE2E8F0))
+                    ) {
+                        Column(modifier = Modifier.padding(12.dp)) {
+                            Text(
+                                text = "CURRENT STATUS",
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF64748B)
+                            )
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(
+                                text = "Guest User (अतिथी मोड)",
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF334155)
+                            )
+                        }
+                    }
+
+                    Text(
+                        text = "Log in with your phone number via real SMS OTP to keep your Tasbeeh counts and personalized settings separated across multiple users on this device.",
+                        fontSize = 12.sp,
+                        color = Color(0xFF475569),
+                        lineHeight = 17.sp
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            if (currentUser != null && !currentUser.isAnonymous) {
+                Button(
+                    onClick = onLogoutClick,
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFDC2626))
+                ) {
+                    Text("Log Out / Switch Account", color = Color.White)
+                }
+            } else {
+                Button(
+                    onClick = onLoginClick,
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF198754))
+                ) {
+                    Text("Sign In with Mobile OTP", color = Color.White)
+                }
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Close")
+            }
+        }
+    )
+}
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,
                     color = Color(0xFF198754)

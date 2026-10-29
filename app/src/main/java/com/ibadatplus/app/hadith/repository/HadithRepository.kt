@@ -2,16 +2,20 @@ package com.ibadatplus.app.hadith.repository
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.ibadatplus.app.auth.AuthManager
 import com.ibadatplus.app.hadith.model.HadithItem
 import org.json.JSONArray
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.time.LocalDate
 
-class HadithRepository(private val context: Context) {
+class HadithRepository(
+    private val context: Context,
+    private val userId: String = AuthManager.getCurrentUserId()
+) {
 
     private val prefs: SharedPreferences =
-        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        context.getSharedPreferences("${PREFS_NAME}_$userId", Context.MODE_PRIVATE)
 
     // Cached in-memory list for instant, offline, zero-latency access
     private var cachedHadiths: List<HadithItem>? = null

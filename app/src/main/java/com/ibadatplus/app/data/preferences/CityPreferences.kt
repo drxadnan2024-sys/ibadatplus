@@ -2,6 +2,7 @@ package com.ibadatplus.app.data.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.ibadatplus.app.auth.AuthManager
 import com.ibadatplus.app.data.model.AsrMadhab
 import com.ibadatplus.app.data.model.CalculationMethod
 import com.ibadatplus.app.data.model.CityLocation
@@ -10,11 +11,15 @@ import com.ibadatplus.app.data.repository.PrayerTimeRepository
 /**
  * Persists user's selected city, location coordinates, calculation method,
  * and Asr Madhab across app restarts using SharedPreferences.
+ * Scoped by authenticated User UID for multi-user isolation.
  */
-class CityPreferences(context: Context) {
+class CityPreferences(
+    context: Context,
+    userId: String = AuthManager.getCurrentUserId()
+) {
 
     private val prefs: SharedPreferences =
-        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        context.getSharedPreferences("${PREFS_NAME}_$userId", Context.MODE_PRIVATE)
 
     companion object {
         private const val PREFS_NAME = "ibadat_city_prefs"

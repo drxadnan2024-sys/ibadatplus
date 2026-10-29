@@ -66,6 +66,12 @@ fun TasbeehScreen(
     modifier: Modifier = Modifier,
     viewModel: TasbeehViewModel = viewModel()
 ) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    androidx.compose.runtime.LaunchedEffect(Unit) {
+        val app = context.applicationContext as android.app.Application
+        viewModel.refreshForUser(app)
+    }
+
     val state by viewModel.uiState.collectAsState()
 
     Scaffold(

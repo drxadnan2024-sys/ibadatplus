@@ -36,8 +36,8 @@ class PrayerTimeViewModel(
     private val repository: PrayerTimeRepository = PrayerTimeRepository()
 ) : AndroidViewModel(application) {
 
-    private val cityPreferences = CityPreferences(application)
-    private val jamatPreferences = JamatPreferences(application)
+    private var cityPreferences = CityPreferences(application)
+    private var jamatPreferences = JamatPreferences(application)
 
     private val _uiState = MutableStateFlow<PrayerTimesUiState>(PrayerTimesUiState.Loading)
     val uiState: StateFlow<PrayerTimesUiState> = _uiState.asStateFlow()
@@ -57,6 +57,21 @@ class PrayerTimeViewModel(
         // Initialize with saved city (e.g., Mumbai) and saved preferences
         loadPrayerTimes()
         startCountdownTicker()
+    }
+
+    /**
+     * Reloads preferences when user logs in, out, or switches accounts for multi-user isolation
+     */
+    fun reloadForUser() {
+        val app = getApplication<Application>()
+        cityPreferences = CityPreferences(app)
+        jamatPreferences = JamatPreferences(app)
+        currentMethod = cityPreferences.getSavedCalculationMethod()
+        currentMadhab = cityPreferences.getSavedAsrMadhab()
+        selectedCity = cityPreferences.getSavedCity()
+        isUsingGpsLocation = false
+        gpsCoordinates = null
+        loadPrayerTimes()
     }
 
     /**

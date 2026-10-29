@@ -40,6 +40,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -64,6 +65,11 @@ fun HadithScreen(
     viewModel: HadithViewModel = viewModel()
 ) {
     val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        val app = context.applicationContext as android.app.Application
+        viewModel.refreshForUser(app)
+    }
+
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
