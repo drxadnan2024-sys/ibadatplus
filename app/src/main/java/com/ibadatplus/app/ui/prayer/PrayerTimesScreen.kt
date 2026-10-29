@@ -103,7 +103,7 @@ fun PrayerTimesScreen(
     var showCityDialog by remember { mutableStateOf(false) }
     var showSettingsDialog by remember { mutableStateOf(false) }
     var showAccountDialog by remember { mutableStateOf(false) }
-    var currentUser by remember { mutableStateOf(AuthManager.getCurrentUser()) }
+    var currentUser by remember { mutableStateOf(try { AuthManager.getCurrentUser() } catch (e: Exception) { null }) }
     var selectedPrayerForJamatEdit by remember { mutableStateOf<PrayerItem?>(null) }
 
     // Location Permission Launcher
@@ -273,7 +273,7 @@ fun PrayerTimesScreen(
                                 hijriDate = schedule.hijriDateFormatted,
                                 currentUser = currentUser,
                                 onAccountClick = {
-                                    currentUser = AuthManager.getCurrentUser()
+                                    currentUser = try { AuthManager.getCurrentUser() } catch (e: Exception) { null }
                                     showAccountDialog = true
                                 }
                             )
@@ -483,7 +483,7 @@ fun PrayerTimesScreen(
                         onNavigateToAuth()
                     },
                     onLogoutClick = {
-                        AuthManager.signOut(context)
+                        try { AuthManager.signOut(context) } catch (e: Exception) { e.printStackTrace() }
                         currentUser = null
                         viewModel.reloadForUser()
                         alarmConfigs = alarmPrefs.getAllConfigs()
