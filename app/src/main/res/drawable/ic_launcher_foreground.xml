@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- 1. Golden Islamic Arch / Mehrab Border -->
+    <path
+        android:pathData="M 32,74 L 32,50 C 32,40 44,30 54,23 C 64,30 76,40 76,50 L 76,74 Z"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:type="linear"
+                android:startX="32"
+                android:startY="23"
+                android:endX="76"
+                android:endY="74">
+                <item android:offset="0.0" android:color="#FDE68A" />
+                <item android:offset="0.5" android:color="#F59E0B" />
+                <item android:offset="1.0" android:color="#D97706" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- 2. Minarets (Left and Right) -->
+    <!-- Left Minaret -->
+    <path
+        android:fillColor="#0D9488"
+        android:pathData="M 37,70 L 40,70 L 40,43 L 38.5,39 L 37,43 Z" />
+    <path
+        android:fillColor="#FBBF24"
+        android:pathData="M 38.5,37 L 38.5,39 Z"
+        android:strokeWidth="1"
+        android:strokeColor="#FBBF24" />
+
+    <!-- Right Minaret -->
+    <path
+        android:fillColor="#0D9488"
+        android:pathData="M 68,70 L 71,70 L 71,43 L 69.5,39 L 68,43 Z" />
+    <path
+        android:fillColor="#FBBF24"
+        android:pathData="M 69.5,37 L 69.5,39 Z"
+        android:strokeWidth="1"
+        android:strokeColor="#FBBF24" />
+
+    <!-- 3. Central Mosque Dome -->
+    <path
+        android:fillColor="#115E59"
+        android:pathData="M 43,70 C 43,58 48,46 54,42 C 60,46 65,58 65,70 Z" />
+
+    <!-- Dome Finial -->
+    <path
+        android:fillColor="#FBBF24"
+        android:pathData="M 54,39 L 54,42"
+        android:strokeWidth="1.5"
+        android:strokeColor="#FBBF24" />
+
+    <!-- 4. Luminous Crescent Moon & Star -->
+    <!-- Crescent Moon -->
+    <path
+        android:fillColor="#FBBF24"
+        android:pathData="M 52.5,29 C 55.5,29 57.8,30.8 58.5,33.5 C 57.2,32.7 55.6,32.3 54,32.3 C 50.7,32.3 48,35 48,38.3 C 48,39.6 48.4,40.8 49,41.8 C 46.8,40.9 45.2,38.8 45.2,36.2 C 45.2,32.2 48.5,29 52.5,29 Z" />
+
+    <!-- Star -->
+    <path
+        android:fillColor="#FDE68A"
+        android:pathData="M 58.5,30 L 59.3,31.7 L 61.2,31.7 L 59.7,32.8 L 60.3,34.5 L 58.5,33.4 L 56.7,34.5 L 57.3,32.8 L 55.8,31.7 L 57.7,31.7 Z" />
+
+    <!-- 5. Praying Person (Sajdah / Dua Silhouette in Soft Glow) -->
+    <path
+        android:fillColor="#E0F2FE"
+        android:pathData="M 54,54 C 55.1,54 56,53.1 56,52 C 56,50.9 55.1,50 54,50 C 52.9,50 52,50.9 52,52 C 52,53.1 52.9,54 54,54 Z" />
+    <path
+        android:fillColor="#E0F2FE"
+        android:pathData="M 51,55 C 50,57 49,60 48,64 L 59,64 C 58,61 56,57 54,55 Z" />
+
+    <!-- 6. Open Holy Quran (Book) at Base -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 54,67 C 49,63 40,65 30,69 C 39,72 49,70 54,73 C 59,70 69,72 78,69 C 68,65 59,63 54,67 Z" />
+    <!-- Golden Page Trim -->
+    <path
+        android:strokeColor="#F59E0B"
+        android:strokeWidth="1.2"
+        android:pathData="M 30,69 C 40,65 49,63 54,67 C 59,63 68,65 78,69" />
+
+    <!-- 7. 'Ibadat Plus' Golden Accent Arc -->
+    <path
+        android:strokeColor="#F59E0B"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M 28,78 L 80,78" />
+
+</vector>

@@ -51,6 +51,18 @@
     "id": 5,
     "book": "Sahih al-Bukhari",
     "bookId": "bukhari",
+    "chapter": "Book of Knowledge (كتاب العلم)",
+    "hadithNumber": 121,
+    "narrator": "Abu Hurairah (RA)",
+    "arabic": "حَفِظْتُ مِنْ رَسُولِ اللَّهِ صلى الله عليه وسلم وِعَاءَيْنِ، فَأَمَّا أَحَدُهُمَا فَبَثَثْتُهُ، وَأَمَّا الآخَرُ فَلَوْ بَثَثْتُهُ قُطِعَ هَذَا الْبُلْعُومُ.",
+    "translationUrdu": "میں نے رسول اللہ ﷺ سے علم کے دو تھیلے (برتن) یاد کیے۔ ایک کو تو میں نے لوگوں میں پھیلا دیا، اور رہا دوسرا تو اگر میں اسے پھیلاؤں تو میرا یہ حلقوم (گلا) کاٹ دیا جائے۔",
+    "translationEnglish": "I have memorized two kinds of knowledge from Allah's Messenger (ﷺ): one of them I have propagated among the people, but if I were to propagate the other, this pharynx (throat) would be cut.",
+    "reference": "Sahih al-Bukhari 121"
+  },
+  {
+    "id": 6,
+    "book": "Sahih al-Bukhari",
+    "bookId": "bukhari",
     "chapter": "Virtues of the Qur'an (كتاب فضائل القرآن)",
     "hadithNumber": 5027,
     "narrator": "Uthman bin Affan (RA)",
@@ -60,7 +72,7 @@
     "reference": "Sahih al-Bukhari 5027"
   },
   {
-    "id": 6,
+    "id": 7,
     "book": "Sahih al-Bukhari",
     "bookId": "bukhari",
     "chapter": "Good Manners and Form (كتاب الأدب)",
@@ -72,7 +84,7 @@
     "reference": "Sahih al-Bukhari 6018"
   },
   {
-    "id": 7,
+    "id": 8,
     "book": "Sahih Muslim",
     "bookId": "muslim",
     "chapter": "Book of Faith (كتاب الإيمان)",
@@ -84,7 +96,19 @@
     "reference": "Sahih Muslim 1"
   },
   {
-    "id": 8,
+    "id": 9,
+    "book": "Sahih Muslim",
+    "bookId": "muslim",
+    "chapter": "Book of Faith (كتاب الإيمان)",
+    "hadithNumber": 121,
+    "narrator": "Abu Hurairah (RA)",
+    "arabic": "لاَ يُلْدَغُ الْمُؤْمِنُ مِنْ جُحْرٍ وَاحِدٍ مَرَّتَيْنِ.",
+    "translationUrdu": "رسول اللہ ﷺ نے فرمایا: مومن ایک سوراخ (بل) سے دو مرتبہ نہیں ڈسا جاتا۔",
+    "translationEnglish": "The Messenger of Allah (ﷺ) said: A believer is not stung twice from the same hole.",
+    "reference": "Sahih Muslim 121"
+  },
+  {
+    "id": 10,
     "book": "Sahih Muslim",
     "bookId": "muslim",
     "chapter": "Book of Purification (كتاب الطهارة)",
@@ -96,7 +120,7 @@
     "reference": "Sahih Muslim 223"
   },
   {
-    "id": 9,
+    "id": 11,
     "book": "Sahih Muslim",
     "bookId": "muslim",
     "chapter": "Book of Virtue and Good Manners (كتاب البر والصلة)",
@@ -108,7 +132,7 @@
     "reference": "Sahih Muslim 2564"
   },
   {
-    "id": 10,
+    "id": 12,
     "book": "Sahih Muslim",
     "bookId": "muslim",
     "chapter": "Book of Dhikr and Dua (كتاب الذكر والدعاء)",

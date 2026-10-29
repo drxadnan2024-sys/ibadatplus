@@ -14,6 +14,7 @@ import com.ibadatplus.app.data.model.AlarmToneType
 import com.ibadatplus.app.data.model.PrayerAlarmConfig
 import com.ibadatplus.app.data.model.PrayerName
 import com.ibadatplus.app.data.model.PreFajrAlarmConfig
+import com.ibadatplus.app.data.preferences.CityPreferences
 import com.ibadatplus.app.data.repository.PrayerTimeRepository
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -98,7 +99,10 @@ object PrayerAlarmScheduler {
         }
 
         val repository = PrayerTimeRepository()
-        val defaultCity = PrayerTimeRepository.DEFAULT_CITY
+        val cityPrefs = CityPreferences(context)
+        val defaultCity = cityPrefs.getSavedCity()
+        val calcMethod = cityPrefs.getSavedCalculationMethod()
+        val asrMadhab = cityPrefs.getSavedAsrMadhab()
         val now = LocalDateTime.now()
 
         val todaySchedule = repository.getPrayerSchedule(
@@ -107,7 +111,9 @@ object PrayerAlarmScheduler {
             latitude = defaultCity.latitude,
             longitude = defaultCity.longitude,
             timeZoneId = defaultCity.timeZoneId,
-            locationName = defaultCity.name
+            locationName = defaultCity.name,
+            method = calcMethod,
+            madhab = asrMadhab
         )
 
         val prayerItem = todaySchedule.prayers.firstOrNull { it.name == prayerName } ?: return
@@ -121,7 +127,9 @@ object PrayerAlarmScheduler {
                 latitude = defaultCity.latitude,
                 longitude = defaultCity.longitude,
                 timeZoneId = defaultCity.timeZoneId,
-                locationName = defaultCity.name
+                locationName = defaultCity.name,
+                method = calcMethod,
+                madhab = asrMadhab
             )
             val tomorrowPrayer = tomorrowSchedule.prayers.firstOrNull { it.name == prayerName } ?: return
             triggerDateTime = tomorrow.atTime(tomorrowPrayer.time).minusMinutes(config.minutesBefore.toLong())
@@ -186,7 +194,10 @@ object PrayerAlarmScheduler {
         }
 
         val repository = PrayerTimeRepository()
-        val defaultCity = PrayerTimeRepository.DEFAULT_CITY
+        val cityPrefs = CityPreferences(context)
+        val defaultCity = cityPrefs.getSavedCity()
+        val calcMethod = cityPrefs.getSavedCalculationMethod()
+        val asrMadhab = cityPrefs.getSavedAsrMadhab()
         val now = LocalDateTime.now()
 
         val todaySchedule = repository.getPrayerSchedule(
@@ -195,7 +206,9 @@ object PrayerAlarmScheduler {
             latitude = defaultCity.latitude,
             longitude = defaultCity.longitude,
             timeZoneId = defaultCity.timeZoneId,
-            locationName = defaultCity.name
+            locationName = defaultCity.name,
+            method = calcMethod,
+            madhab = asrMadhab
         )
 
         val fajrItem = todaySchedule.prayers.firstOrNull { it.name == PrayerName.FAJR } ?: return
@@ -209,7 +222,9 @@ object PrayerAlarmScheduler {
                 latitude = defaultCity.latitude,
                 longitude = defaultCity.longitude,
                 timeZoneId = defaultCity.timeZoneId,
-                locationName = defaultCity.name
+                locationName = defaultCity.name,
+                method = calcMethod,
+                madhab = asrMadhab
             )
             val tomorrowFajr = tomorrowSchedule.prayers.firstOrNull { it.name == PrayerName.FAJR } ?: return
             triggerDateTime = tomorrow.atTime(tomorrowFajr.time).minusMinutes(config.minutesBeforeFajr.toLong())
@@ -314,7 +329,10 @@ object PrayerAlarmScheduler {
         if (!config.isEnabled) return "Off"
 
         val repository = PrayerTimeRepository()
-        val defaultCity = PrayerTimeRepository.DEFAULT_CITY
+        val cityPrefs = CityPreferences(context)
+        val defaultCity = cityPrefs.getSavedCity()
+        val calcMethod = cityPrefs.getSavedCalculationMethod()
+        val asrMadhab = cityPrefs.getSavedAsrMadhab()
         val now = LocalDateTime.now()
 
         val todaySchedule = repository.getPrayerSchedule(
@@ -323,7 +341,9 @@ object PrayerAlarmScheduler {
             latitude = defaultCity.latitude,
             longitude = defaultCity.longitude,
             timeZoneId = defaultCity.timeZoneId,
-            locationName = defaultCity.name
+            locationName = defaultCity.name,
+            method = calcMethod,
+            madhab = asrMadhab
         )
 
         val prayerItem = todaySchedule.prayers.firstOrNull { it.name == prayerName } ?: return "--"
@@ -338,7 +358,9 @@ object PrayerAlarmScheduler {
                 latitude = defaultCity.latitude,
                 longitude = defaultCity.longitude,
                 timeZoneId = defaultCity.timeZoneId,
-                locationName = defaultCity.name
+                locationName = defaultCity.name,
+                method = calcMethod,
+                madhab = asrMadhab
             )
             val tomorrowPrayer = tomorrowSchedule.prayers.firstOrNull { it.name == prayerName } ?: return "--"
             triggerDateTime = tomorrow.atTime(tomorrowPrayer.time).minusMinutes(config.minutesBefore.toLong())
@@ -353,7 +375,10 @@ object PrayerAlarmScheduler {
         if (!config.isEnabled) return "Off"
 
         val repository = PrayerTimeRepository()
-        val defaultCity = PrayerTimeRepository.DEFAULT_CITY
+        val cityPrefs = CityPreferences(context)
+        val defaultCity = cityPrefs.getSavedCity()
+        val calcMethod = cityPrefs.getSavedCalculationMethod()
+        val asrMadhab = cityPrefs.getSavedAsrMadhab()
         val now = LocalDateTime.now()
 
         val todaySchedule = repository.getPrayerSchedule(
@@ -362,7 +387,9 @@ object PrayerAlarmScheduler {
             latitude = defaultCity.latitude,
             longitude = defaultCity.longitude,
             timeZoneId = defaultCity.timeZoneId,
-            locationName = defaultCity.name
+            locationName = defaultCity.name,
+            method = calcMethod,
+            madhab = asrMadhab
         )
 
         val fajrItem = todaySchedule.prayers.firstOrNull { it.name == PrayerName.FAJR } ?: return "--"
@@ -377,7 +404,9 @@ object PrayerAlarmScheduler {
                 latitude = defaultCity.latitude,
                 longitude = defaultCity.longitude,
                 timeZoneId = defaultCity.timeZoneId,
-                locationName = defaultCity.name
+                locationName = defaultCity.name,
+                method = calcMethod,
+                madhab = asrMadhab
             )
             val tomorrowFajr = tomorrowSchedule.prayers.firstOrNull { it.name == PrayerName.FAJR } ?: return "--"
             triggerDateTime = tomorrow.atTime(tomorrowFajr.time).minusMinutes(config.minutesBeforeFajr.toLong())

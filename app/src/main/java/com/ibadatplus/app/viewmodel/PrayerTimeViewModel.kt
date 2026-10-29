@@ -1,11 +1,12 @@
 package com.ibadatplus.app.viewmodel
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.content.Context
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.ibadatplus.app.data.model.AsrMadhab
 import com.ibadatplus.app.data.model.CalculationMethod
@@ -13,6 +14,7 @@ import com.ibadatplus.app.data.model.CityLocation
 import com.ibadatplus.app.data.model.DailyPrayerSchedule
 import com.ibadatplus.app.data.model.PrayerItem
 import com.ibadatplus.app.data.model.PrayerTimesUiState
+import com.ibadatplus.app.data.preferences.CityPreferences
 import com.ibadatplus.app.data.repository.PrayerTimeRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -29,16 +31,19 @@ import java.time.ZoneId
 import java.util.Locale
 
 class PrayerTimeViewModel(
+    application: Application,
     private val repository: PrayerTimeRepository = PrayerTimeRepository()
-) : ViewModel() {
+) : AndroidViewModel(application) {
+
+    private val cityPreferences = CityPreferences(application)
 
     private val _uiState = MutableStateFlow<PrayerTimesUiState>(PrayerTimesUiState.Loading)
     val uiState: StateFlow<PrayerTimesUiState> = _uiState.asStateFlow()
 
-    // Current settings
-    private var currentMethod: CalculationMethod = PrayerTimeRepository.DEFAULT_METHOD
-    private var currentMadhab: AsrMadhab = PrayerTimeRepository.DEFAULT_MADHAB
-    private var selectedCity: CityLocation = PrayerTimeRepository.DEFAULT_CITY
+    // Current settings loaded from persistent SharedPreferences
+    private var currentMethod: CalculationMethod = cityPreferences.getSavedCalculationMethod()
+    private var currentMadhab: AsrMadhab = cityPreferences.getSavedAsrMadhab()
+    private var selectedCity: CityLocation = cityPreferences.getSavedCity()
     private var isUsingGpsLocation: Boolean = false
     private var gpsCoordinates: Pair<Double, Double>? = null
     private var gpsLocationName: String = "GPS Location"
@@ -47,7 +52,7 @@ class PrayerTimeViewModel(
     private var tickerJob: Job? = null
 
     init {
-        // Initialize with default city and Karachi + Hanafi defaults
+        // Initialize with saved city (e.g., Mumbai) and saved preferences
         loadPrayerTimes()
         startCountdownTicker()
     }
@@ -196,6 +201,7 @@ class PrayerTimeViewModel(
                     val lon = bestLocation.longitude
                     gpsCoordinates = lat to lon
                     isUsingGpsLocation = true
+                    cityPreferences.setUsingGps(true)
 
                     // Reverse geocode to get city name
                     gpsLocationName = try {
@@ -234,28 +240,36 @@ class PrayerTimeViewModel(
     }
 
     /**
-     * Manually select a city from the list
+     * Checks if user has manually chosen a city previously
+     */
+    fun isManualCitySaved(): Boolean = cityPreferences.isManualCitySelected()
+
+    /**
+     * Manually select a city from the list and persist to SharedPreferences
      */
     fun selectCity(city: CityLocation) {
         selectedCity = city
         isUsingGpsLocation = false
         gpsCoordinates = null
+        cityPreferences.saveSelectedCity(city)
         loadPrayerTimes()
     }
 
     /**
-     * Change calculation method (Karachi, MWL, Umm al-Qura, ISNA)
+     * Change calculation method (Karachi, MWL, Umm al-Qura, ISNA) and persist
      */
     fun updateCalculationMethod(method: CalculationMethod) {
         currentMethod = method
+        cityPreferences.saveCalculationMethod(method)
         loadPrayerTimes()
     }
 
     /**
-     * Change Asr Madhab (Hanafi, Shafi)
+     * Change Asr Madhab (Hanafi, Shafi) and persist
      */
     fun updateAsrMadhab(madhab: AsrMadhab) {
         currentMadhab = madhab
+        cityPreferences.saveAsrMadhab(madhab)
         loadPrayerTimes()
     }
 

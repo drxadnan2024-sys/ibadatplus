@@ -19,8 +19,10 @@ import com.ibadatplus.app.qibla.ui.QiblaFinderScreen
 import com.ibadatplus.app.tasbeeh.ui.TasbeehScreen
 import com.ibadatplus.app.ui.alarm.PrayerAlarmSettingsScreen
 import com.ibadatplus.app.ui.prayer.PrayerTimesScreen
+import com.ibadatplus.app.ui.splash.SplashScreen
 
 enum class AppScreen {
+    Splash,
     PrayerTimes,
     AlarmSettings,
     QiblaFinder,
@@ -37,10 +39,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    var currentScreen by remember { mutableStateOf(AppScreen.PrayerTimes) }
+                    var currentScreen by remember { mutableStateOf(AppScreen.Splash) }
 
                     // Hardware back button support
-                    BackHandler(enabled = currentScreen != AppScreen.PrayerTimes) {
+                    BackHandler(enabled = currentScreen != AppScreen.PrayerTimes && currentScreen != AppScreen.Splash) {
                         currentScreen = AppScreen.PrayerTimes
                     }
 
@@ -49,6 +51,13 @@ class MainActivity : ComponentActivity() {
                         label = "ScreenTransition"
                     ) { screen ->
                         when (screen) {
+                            AppScreen.Splash -> {
+                                SplashScreen(
+                                    onSplashFinished = {
+                                        currentScreen = AppScreen.PrayerTimes
+                                    }
+                                )
+                            }
                             AppScreen.PrayerTimes -> {
                                 PrayerTimesScreen(
                                     onNavigateToAlarmSettings = {

@@ -105,9 +105,12 @@ class HadithViewModel(application: Application) : AndroidViewModel(application) 
             repository.getAllHadiths()
         }
 
+        val isSearching = currentState.searchQuery.isNotBlank()
+
         val filtered = sourceList.filter { hadith ->
             val matchesBook = currentState.selectedBookId == "all" || hadith.bookId == currentState.selectedBookId
-            val matchesChapter = currentState.selectedChapter == null || hadith.chapter == currentState.selectedChapter
+            // When actively searching, search across the book/all books so specific chapter filter doesn't hide search results
+            val matchesChapter = if (isSearching) true else (currentState.selectedChapter == null || hadith.chapter == currentState.selectedChapter)
             val matchesSearch = hadith.matchesQuery(currentState.searchQuery)
             matchesBook && matchesChapter && matchesSearch
         }

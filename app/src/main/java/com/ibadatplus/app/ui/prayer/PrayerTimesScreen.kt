@@ -109,14 +109,16 @@ fun PrayerTimesScreen(
         }
     }
 
-    // Auto-request location permission on first composition
+    // Auto-request location permission on first composition ONLY if user has not picked a manual city
     LaunchedEffect(Unit) {
-        locationPermissionLauncher.launch(
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
+        if (!viewModel.isManualCitySaved()) {
+            locationPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
             )
-        )
+        }
     }
 
     Scaffold(

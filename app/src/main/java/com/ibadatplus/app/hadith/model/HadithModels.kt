@@ -18,14 +18,26 @@ data class HadithItem(
 ) {
     fun matchesQuery(query: String): Boolean {
         if (query.isBlank()) return true
-        val q = query.trim().lowercase()
-        return translationUrdu.lowercase().contains(q) ||
-                translationEnglish.lowercase().contains(q) ||
-                arabic.contains(q) ||
-                narrator.lowercase().contains(q) ||
-                chapter.lowercase().contains(q) ||
-                reference.lowercase().contains(q) ||
-                hadithNumber.toString().contains(q)
+        val cleanQuery = query.trim().lowercase()
+        val digitsOnly = cleanQuery.filter { it.isDigit() }
+
+        // 1. Direct Hadith number match (e.g. searching "1", "121", "#121")
+        val matchesNumber = if (digitsOnly.isNotEmpty()) {
+            hadithNumber.toString() == digitsOnly ||
+                    hadithNumber.toString().startsWith(digitsOnly) ||
+                    hadithNumber.toString().contains(digitsOnly)
+        } else false
+
+        // 2. Textual search across all relevant fields
+        val matchesText = reference.lowercase().contains(cleanQuery) ||
+                translationEnglish.lowercase().contains(cleanQuery) ||
+                translationUrdu.lowercase().contains(cleanQuery) ||
+                arabic.contains(cleanQuery) ||
+                narrator.lowercase().contains(cleanQuery) ||
+                chapter.lowercase().contains(cleanQuery) ||
+                book.lowercase().contains(cleanQuery)
+
+        return matchesNumber || matchesText
     }
 
     fun getShareableText(language: TranslationLanguage): String {
